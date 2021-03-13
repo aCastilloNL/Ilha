@@ -22,22 +22,26 @@ import EventIcon from '@material-ui/icons/Event';
 import LibraryBooksIcon from '@material-ui/icons/LibraryBooks';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import VideoCallIcon from '@material-ui/icons/VideoCall';
+import SupervisorAccountIcon from '@material-ui/icons/SupervisorAccount';
 import Button from '@material-ui/core/Button';
-// import Paper from '@material-ui/core/Paper';
 import logo from '../images/logo_White_NT.png';
-// import Analytics from '../Analytics/Analytics.js';
 import Plans from '../plans/Plans.js';
 import UserAvatar from 'react-user-avatar';
 import Avatar from '@material-ui/core/Avatar';
 import Analytics2 from '../analytics/Analytics2.js';
-import { Link } from 'react-router-dom';
-
+import { Link, useHistory } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
 import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
+import VideoDialog from '../video-page/VideoDialog';
+import Badges from '../badges/Badges';
+
 
 import './Dashboard.css';
 
-const drawerWidth = 180;
+const { signOut } = require('../../redux/actions/AuthActionCreators.js');
+
+const drawerWidth = 185;
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -59,6 +63,29 @@ const useStyles = makeStyles((theme) => ({
       duration: theme.transitions.duration.enteringScreen,
     }),
   },
+  selectedMenu: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+  },
+  userProfile: {
+    marginTop: -30,
+    marginBottom: -5,
+  },
+  userName: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+
+    fontSize: 14,
+    paddingBottom: 13,
+    fontFamily: [
+      '-apple-system',
+      'BlinkMacSystemFont',
+      '"Segoe UI"',
+      'Roboto',
+    ].join(','),
+  },
   menuButton: {
     marginRight: 36,
   },
@@ -72,7 +99,7 @@ const useStyles = makeStyles((theme) => ({
   },
   drawerOpen: {
     width: drawerWidth,
-    backgroundColor: 'rgb(233, 42, 138)',
+    backgroundColor: 'rgb(255, 255, 255)',
     transition: theme.transitions.create('width', {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.enteringScreen,
@@ -84,7 +111,7 @@ const useStyles = makeStyles((theme) => ({
       duration: theme.transitions.duration.leavingScreen,
     }),
     overflowX: 'hidden',
-    backgroundColor: 'rgb(233, 42, 138)',
+    backgroundColor: 'rgb(255, 255, 255)',
     width: theme.spacing(7) + 1,
     [theme.breakpoints.up('sm')]: {
       width: theme.spacing(9) + 1,
@@ -109,7 +136,7 @@ const useStyles = makeStyles((theme) => ({
   },
 
   button: {
-    backgroundColor: 'rgb(233, 42, 138)',
+    backgroundColor: 'rgb(255, 255, 255)',
     marginLeft: '85%',
     position: 'absolute',
     top: '20%',
@@ -123,9 +150,19 @@ function HomeIcon(props) {
 export default function MiniDrawer() {
   const classes = useStyles();
   const theme = useTheme();
+  const userName = useSelector((state) => state.authentication.username);
+  const userId = useSelector((state) => state.authentication.userId);
+  const role = useSelector((state) => state.authentication.role);
+  const dispatch = useDispatch();
+  const history = useHistory();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [selectedIndex, setSelectedIndex] = React.useState(1);
   const [open, setOpen] = React.useState(true);
+  const [openVideoDialog, setOpenVideoDialog] = React.useState(false);
+
+  const handleSignOut = () => {
+    dispatch(signOut(history));
+  };
 
   ///////////////////// make drawer close when screen is small
   const setSmall = () => {
@@ -151,12 +188,13 @@ export default function MiniDrawer() {
   const options = [
     <UserAvatar
       size="120"
-      name="Jane Doe"
+      name={userName}
       color="#a8a8a8"
       className="user-profile"
     />,
-    '[ Change Profile Picture ]',
-    '[ Settings ]',
+    <Link to="/editProfile" className="menu-link">
+      <Button color="secondary">Edit Profile</Button>
+    </Link>,
     'Cancel',
   ];
 
@@ -180,6 +218,40 @@ export default function MiniDrawer() {
 
   const handleDrawerClose = () => {
     setOpen(false);
+  };
+
+  const handleClickOpenVideoroom = () => {
+    if (role === 'teacher') {
+      setOpenVideoDialog(true);
+    } else {
+      openVideoroom();
+    }
+  };
+
+  const handleCloseVideoDialog = (value) => {
+    setOpenVideoDialog(false);
+    switch (value) {
+      case 'New':
+        openVideoroom();
+        break;
+      case 'Existing':
+        window.open(
+          window.location.origin + `/users/`
+          // '_blank',
+          // 'toolbar=0,location=0,menubar=0'
+        );
+        break;
+      default:
+        break;
+    }
+  };
+
+  const openVideoroom = () => {
+    window.open(
+      window.location.origin + `/videoroom/${userId}`,
+      '_blank',
+      'toolbar=0,location=0,menubar=0'
+    );
   };
 
   return (
@@ -209,11 +281,24 @@ export default function MiniDrawer() {
               <p>ILHA</p>
             </div>
           </Typography>
-          <Link to="/Video" target="_blank">
+
+          {/* <Link to={`/videoroom/${userId}`} target="_blank">
             <Button variant="contained" className={classes.button}>
               <VideoCallIcon />
             </Button>
-          </Link>
+          </Link> */}
+
+          <Button
+            variant="contained"
+            className={classes.button}
+            onClick={handleClickOpenVideoroom}
+          >
+            <VideoCallIcon />
+          </Button>
+          <VideoDialog
+            open={openVideoDialog}
+            onClose={handleCloseVideoDialog}
+          />
         </Toolbar>
       </AppBar>
       <Drawer
@@ -247,18 +332,22 @@ export default function MiniDrawer() {
             aria-controls="lock-menu"
             aria-label="when device is locked"
             onClick={handleClickListItem}
+            
           >
             {open ? (
-              <UserAvatar
-                size="120"
-                name="Jane Doe"
-                color="#a8a8a8"
-                className="user-profile"
-              />
+              <div className={classes.userProfile}>
+                <UserAvatar
+                  size="120"
+                  name={userName}
+                  color="#a8a8a8"
+                  className="user-profile"
+                />
+                <Badges />
+              </div>
             ) : (
               <ListItemIcon>
                 <Avatar
-                  alt="Jane Doe"
+                  alt={userName}
                   src="/static/images/avatar/1.jpg"
                   className="small-avatar"
                   onClick={handleClickListItem}
@@ -266,49 +355,78 @@ export default function MiniDrawer() {
               </ListItemIcon>
             )}
           </ListItem>
-
+          <div className={classes.userName}>{userName}</div>
           <Divider />
-          <ListItem button>
-            <ListItemIcon>
-              <AccountCircleIcon />
-            </ListItemIcon>
-            <ListItemText primary={'My Profile'} />
-          </ListItem>
+          <Link to="/myProfile" className="menu-link">
+            <ListItem button>
+              <ListItemIcon>
+                <AccountCircleIcon />
+              </ListItemIcon>
+              <ListItemText primary={'My Profile'} />
+            </ListItem>
+          </Link>
 
-          <ListItem button>
-            <ListItemIcon>
-              <DashboardIcon />
-            </ListItemIcon>
-            <ListItemText primary={'Dashboard'} />
-          </ListItem>
+          <Link to="/Dashboard" className="menu-link">
+            <ListItem button>
+              <ListItemIcon>
+                <DashboardIcon />
+              </ListItemIcon>
+              <ListItemText primary={'Dashboard'} />
+            </ListItem>
+          </Link>
+          <Link to="/Messages" className="menu-link">
+            <ListItem button>
+              <ListItemIcon>
+                <MailIcon />
+              </ListItemIcon>
+              <ListItemText primary={'Messages'} />
+            </ListItem>
+          </Link>
+          <Link to="/agenda" className="menu-link">
+            <ListItem button>
+              <ListItemIcon>
+                <EventIcon />
+              </ListItemIcon>
+              <ListItemText primary={'Agenda'} />
+            </ListItem>
+          </Link>
+          {role === 'teacher' && (
+            <Link to="/students" target="_blank" className="menu-link">
+              <ListItem button>
+                <ListItemIcon>
+                  <VideoCallIcon />
+                </ListItemIcon>
+                <ListItemText primary={'Connect'} />
+              </ListItem>
+            </Link>
+          )}
+          {role === 'student' && (
+            <Link to="/teachers" className="menu-link">
+              <ListItem button>
+                <ListItemIcon>
+                  <SupervisorAccountIcon />
+                </ListItemIcon>
+                <ListItemText primary={'Choose Teacher'} />
+              </ListItem>
+            </Link>
+          )}
+          <Link to="/files" className="menu-link">
+            <ListItem button>
+              <ListItemIcon>
+                <LibraryBooksIcon />
+              </ListItemIcon>
+              <ListItemText primary={'Files'} />
+            </ListItem>
+          </Link>
 
-          <ListItem button>
-            <ListItemIcon>
-              <MailIcon />
-            </ListItemIcon>
-            <ListItemText primary={'Messages'} />
-          </ListItem>
-
-          <ListItem button>
-            <ListItemIcon>
-              <EventIcon />
-            </ListItemIcon>
-            <ListItemText primary={'Agenda'} />
-          </ListItem>
-
-          <ListItem button>
-            <ListItemIcon>
-              <LibraryBooksIcon />
-            </ListItemIcon>
-            <ListItemText primary={'Files'} />
-          </ListItem>
-
-          <ListItem button>
-            <ListItemIcon>
-              <ExitToAppIcon />
-            </ListItemIcon>
-            <ListItemText primary={'Log out'} />
-          </ListItem>
+          <Link to="/" className="menu-link">
+            <ListItem button onClick={handleSignOut}>
+              <ListItemIcon>
+                <ExitToAppIcon />
+              </ListItemIcon>
+              <ListItemText primary={'Sign Out'} />
+            </ListItem>
+          </Link>
         </List>
         <Menu
           id="lock-menu"
@@ -318,20 +436,21 @@ export default function MiniDrawer() {
           onClose={handleClose}
         >
           {options.map((option, index) => (
-            <MenuItem
-              key={option}
-              disabled={index === 0}
-              selected={index === selectedIndex}
-              onClick={(event) => handleMenuItemClick(event, index)}
-            >
-              {option}
-            </MenuItem>
+            <div className={classes.selectedMenu}>
+              <MenuItem
+                key={option}
+                disabled={index === 0}
+                selected={index === selectedIndex}
+                onClick={(event) => handleMenuItemClick(event, index)}
+              >
+                {option}
+              </MenuItem>
+            </div>
           ))}
         </Menu>
         <Divider />
       </Drawer>
       <main className={classes.content}>
-        {/* <Analytics /> */}
         <Analytics2 />
         <Plans />
       </main>

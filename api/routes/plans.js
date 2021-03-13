@@ -3,7 +3,7 @@ const Plan = require('../models/plans');
 const Task = require('../models/tasks');
 
 router.route('/').get((req, res) => {
-    Plan.find()
+    Plan.find( {userId: req.header('userId')})
         .then(plans => res.json(plans))
         .catch(err => res.status(400).json('Error: ' + err));
 });
@@ -20,13 +20,24 @@ router.route('/').post((req, res) => {
 
     const planName = req.body.planName;
     const tasks = req.body.tasks;
+    const userId = req.body.userId;
     //   plan.date = Date.parse(req.body.date);
-    const newPlan = new Plan({ planName, tasks });
+    const newPlan = new Plan({ userId, planName, tasks });
 
     newPlan.save()
         .then(() => res.json(newPlan))
         .catch(err => res.status(400).json('error is here' + err));
+});
 
+
+// updating plan title
+router.route('/:plan_id').put((req, res) => {
+    Plan.findById(req.params.plan_id).updateOne(
+        { "$set": { "planName": req.body.planName } }
+    )
+    .then(() => { res.send('Plan title updated!')
+    })
+    .catch(err => res.status(400).json('Error: ' + err));
 });
 
 
@@ -63,25 +74,32 @@ router.route('/:id').put((req, res) => {
 });
 
 
-//updating task
+// updating task
 router.route('/:plan_id/tasks/:task_id').put((req, res) => {
-    Plan.findById(req.params.plan_id).update(
+    Plan.findById(req.params.plan_id).updateOne(
 
         { "tasks._id": req.params.task_id },
         { "$set": { "tasks.$": req.body } }
 
-    ).then(() => res.json('Task updated!'))
-        .catch(err => res.status(400).json('Error: ' + err));
+    )
+    .then(() => { res.send('Task updated!')
+    //    Plan.findOne({_id: req.params.plan_id}, (err,foundPlan)=>{
+    //         res.json(foundPlan.tasks)  // attempt to grab the task with new id
+    //    })
+    })
+    .catch(err => res.status(400).json('Error: ' + err));
 });
+
+
+
+
 
 // deleting task
 router.route('/:plan_id/tasks/:task_id').delete((req, res) => {
-    Plan.findByIdAndDelete(req.params.plan_id).update(
-
-        { "$pull": { tasks: { "_id": req.params.task_id } } }
-
-    ).then(() => res.json('Task deleted.'))
-        .catch(err => res.status(400).json('Error: ' + err));
+    Plan.findByIdAndDelete(req.params.plan_id).update({ "$pull": { tasks: { "_id": req.params.task_id } } }
+)
+    .then(() => res.json('Task deleted.'))
+     .catch(err => res.status(400).json('Error: ' + err));
 });
 
 
@@ -89,7 +107,7 @@ router.route('/:plan_id/tasks/:task_id').delete((req, res) => {
 //add task
 router.route('/:plan_id/tasks').post((req, res) => {
     const taskName = req.body.taskName;
-    const taskDescription = req.body.description;///name from ejs
+    const taskDescription = req.body.description;
     const taskDuration = req.body.duration;
 
     const task = new Task({
@@ -98,30 +116,15 @@ router.route('/:plan_id/tasks').post((req, res) => {
         duration: taskDuration,
         planId: req.params.plan_id
     });
-
-    Plan.findOne({ _id: req.params.plan_id }, (err, foundPlan) => {
-        foundPlan.tasks.push(task)
-        foundPlan.save()
-            .then(() => res.json(task))
-            .catch(err => res.status(400).json('error is here' + err));
-
+    
+    Plan.findOne({_id: req.params.plan_id}, (err,foundPlan)=>{
+      foundPlan.tasks.push(task)
+      foundPlan.save()
+    .then(() => res.json(task))
+    .catch(err => res.status(400).json('error is here' + err));
+      
     })
 
 });
-
-// router.route('/:plan_id/tasks').post((req, res) => {
-//     const taskName = req.body.taskName;
-//     const taskDescription = req.body.description;
-//     const taskDuration = req.body.duration;
-//     const newTask = new Task({ taskName, taskDescription, taskDuration });
-//     console.log(newTask);
-//     Plan.find().update(
-//         { "_id": req.params.plan_id },
-//         { "$push": { "tasks": req.body } },
-//     ).then(() => res.json(newTask))
-//         .catch(err => res.status(400).json('Error: ' + err));
-// });
-
-
 
 module.exports = router;

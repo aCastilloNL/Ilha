@@ -9,14 +9,16 @@ import TasksTable from './TasksTable';
 import DeleteIcon from '@material-ui/icons/Delete';
 import VideocamIcon from '@material-ui/icons/Videocam';
 import './Plans.css';
-import { useDispatch } from 'react-redux';
-import { addTask } from '../../actions';
+import { useDispatch, useSelector } from 'react-redux';
+import { addTask, updatePlanTitle } from '../../redux/actions/PlansActions';
 import Warning from './messages/Warning';
 import Delete from './messages/Delete';
 import Accordion from '@material-ui/core/Accordion';
 import AccordionSummary from '@material-ui/core/AccordionSummary';
 import AccordionDetails from '@material-ui/core/AccordionDetails';
 import Typography from '@material-ui/core/Typography';
+import CheckIcon from '@material-ui/icons/Check';
+import ClearIcon from '@material-ui/icons/Clear';
 
 const useStyles = makeStyles({
   root: {
@@ -41,16 +43,21 @@ const useStyles = makeStyles({
   },
 });
 
-export default function Plan({ plan, isExpanded, toggleExpanded }) {
+export default function Plan({
+  plan,
+  isExpanded,
+  toggleExpanded,
+  toggleAddPlanButtonDisable,
+}) {
   const [planName, setPlanName] = React.useState(plan.planName);
+  const [isPlanNameEditable, setPlanNameEditable] = React.useState(false);
   const [taskName, setTaskName] = React.useState('');
   const [description, setDescription] = React.useState('');
   const [duration, setDuration] = React.useState('');
   const [warningMessage, setWarningMessage] = React.useState(false);
   const [deleteWarningMessage, setDeleteWarningMessage] = React.useState(false);
-
-
   const [expanded, setExpanded] = React.useState(false);
+  const userId = useSelector((state) => state.authentication.userId);
 
   const classes = useStyles();
 
@@ -64,19 +71,31 @@ export default function Plan({ plan, isExpanded, toggleExpanded }) {
     setDeleteWarningMessage(!deleteWarningMessage);
   };
 
+  const openVideoroom = () => {
+    window.open(
+      window.location.origin + `/videoroom/${userId}?planId=${plan._id}`,
+      '_blank',
+      'toolbar=0,location=0,menubar=0'
+    );
+  };
+
+  const savePlanTitle = () => {
+    setPlanNameEditable(false);
+    plan.planName = planName;
+    executeReduxAction(updatePlanTitle(plan));
+  };
+
+  const clearPlanTitleInput = () => {
+    setPlanName('');
+  };
 
   const planToString = () => {
-    const name = planName || 'New plan';
-
     const planTasks = plan.tasks;
-    const duration = planTasks.reduce(
-      (accumulator, currentValue) => {
-        return accumulator + parseInt(currentValue.duration);
-      },
-      0
-    );
+    const duration = planTasks.reduce((accumulator, currentValue) => {
+      return accumulator + parseInt(currentValue.duration);
+    }, 0);
     const parts = planTasks.length;
-    return `${name}, ${duration} min  / ${parts} parts`;
+    return `${planName}, ${duration} min  / ${parts} parts`;
   };
 
   const addCurrentTask = () => {
@@ -94,7 +113,9 @@ export default function Plan({ plan, isExpanded, toggleExpanded }) {
     ) {
       setWarningMessage(!warningMessage);
     } else {
-      executeReduxAction(addTask(newTask));
+      executeReduxAction(addTask(newTask)).then(() =>
+        toggleAddPlanButtonDisable(false)
+      );
     }
     setTaskName('');
     setDescription('');
@@ -102,6 +123,7 @@ export default function Plan({ plan, isExpanded, toggleExpanded }) {
   };
 
   const handlePlanNameOnChange = (event) => {
+    setPlanNameEditable(true);
     setPlanName(event.target.value);
   };
 
@@ -127,10 +149,10 @@ export default function Plan({ plan, isExpanded, toggleExpanded }) {
         <div className={classes['accordion-summary-content']}>
           <Typography className={classes.heading}>{planToString()}</Typography>
           <div>
-            <IconButton onClick={(event) => event.stopPropagation()}>
+            <IconButton onClick={openVideoroom}>
               <VideocamIcon />
             </IconButton>
-            <IconButton onClick={deleteCurrentPlan} >
+            <IconButton onClick={deleteCurrentPlan}>
               <DeleteIcon />
             </IconButton>
           </div>
@@ -144,10 +166,22 @@ export default function Plan({ plan, isExpanded, toggleExpanded }) {
                 <form className={classes.root} noValidate autoComplete="off">
                   <TextField
                     id="standard-basic"
-                    label="Add a plan title"
+                    label="Change plan title"
                     value={planName}
                     onChange={handlePlanNameOnChange}
                   />
+
+                  {isPlanNameEditable ? (
+                    <IconButton onClick={savePlanTitle}>
+                      {' '}
+                      <CheckIcon />{' '}
+                    </IconButton>
+                  ) : (
+                    <IconButton onClick={clearPlanTitleInput}>
+                      {' '}
+                      <ClearIcon />{' '}
+                    </IconButton>
+                  )}
                 </form>
               </div>
               <br></br>
@@ -186,7 +220,6 @@ export default function Plan({ plan, isExpanded, toggleExpanded }) {
 
             {warningMessage ? <Warning /> : ''}
             {deleteWarningMessage ? <Delete planId={plan._id} /> : ''}
-
           </Card>
         </div>
       </AccordionDetails>

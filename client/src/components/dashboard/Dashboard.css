@@ -57,3 +57,8 @@ p {
     margin-bottom: 2vh;
 
 }
+
+.menu-link {
+    text-decoration: none;
+    color: black;
+}

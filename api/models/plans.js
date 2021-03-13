@@ -7,6 +7,7 @@ const Schema = mongoose.Schema;
 const planSchema = new Schema(
 
     {
+        userId: { type: String, required: true },
         planName: { type: String, required: true },
         tasks: [taskSchema]
     },

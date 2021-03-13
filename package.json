@@ -17,8 +17,5 @@
     "url": "https://github.com/KulinkovichVA/IlhaDevelopment/issues"
   },
   "homepage": "https://github.com/KulinkovichVA/IlhaDevelopment#readme",
-  "dependencies": {
-    "peer": "^0.6.1",
-    "styled-components": "^5.2.1"
-  }
+  "dependencies": {}
 }

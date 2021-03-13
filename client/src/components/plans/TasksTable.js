@@ -9,7 +9,7 @@ import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import IconButton from '@material-ui/core/IconButton';
 import DeleteIcon from '@material-ui/icons/Delete';
-import { deleteTask, updateTask } from '../../actions';
+import { deleteTask, updateTask } from '../../redux/actions/PlansActions';
 import { useDispatch } from 'react-redux';
 import EditIcon from '@material-ui/icons/Edit';
 import TextField from '@material-ui/core/TextField';
