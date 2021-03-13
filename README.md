@@ -65,12 +65,17 @@ Our team decided to re-create the majority of the official website in order to i
 
 
 ### Built With
-* [![React](https://aleen42.github.io/badges/src/react.svg)](https://reactjs.org)
-* [![Material-UI](https://img.shields.io/badge/-Material--UI-333333?logo=Material-UI&logoColor=blue&labelColor=212121)](https://material-ui.com/)
-* [![Styled-Components](https://img.shields.io/badge/-Styled--Components-8F5935?logo=styled-components&logoColor=pink&labelColor=393939)](https://material-ui.com/)
+* ![Javascript](https://aleen42.github.io/badges/src/javascript.svg)
+![VSCode](https://aleen42.github.io/badges/src/visual_studio_code.svg)
+* [![React](https://aleen42.github.io/badges/src/react.svg)](https://reactjs.org) 
+[![React](https://aleen42.github.io/badges/src/router.svg)](https://reactrouter.com/)
+* [![Material-UI](https://img.shields.io/badge/-Material--UI-333333?logo=Material-UI&logoColor=blue&labelColor=212121)](https://material-ui.com/) 
+[![Styled-Components](https://img.shields.io/badge/-Styled--Components-8F5935?logo=styled-components&logoColor=pink&labelColor=393939)](https://material-ui.com/)
 * ![Redux](https://aleen42.github.io/badges/src/redux.svg)
-* ![React Router](https://aleen42.github.io/badges/src/router.svg)
+[![JWT](https://img.shields.io/badge/-JsonWebToken-D639FF?logo=JSON-Web-Tokens&logoColor=01F2E6&labelColor=black)](https://material-ui.com/)
 * ![Node.js](https://aleen42.github.io/badges/src/node.svg)
+![Express](https://img.shields.io/badge/JS-Express-red)
+![MongoDB](https://img.shields.io/badge/-mongoDB-13924F?logo=MongoDB&logoColor=10AA50&labelColor=beige)
 * <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/68/WebRTC_Logo.svg/750px-WebRTC_Logo.svg.png" width="100" height="18"/>
 
 
