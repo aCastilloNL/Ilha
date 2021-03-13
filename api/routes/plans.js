@@ -111,10 +111,10 @@ router.route('/:plan_id/tasks').post((req, res) => {
     const taskDuration = req.body.duration;
 
     const task = new Task({
-      taskName: taskName,
-      description: taskDescription,
-      duration: taskDuration, 
-      planId: req.params.plan_id
+        taskName: taskName,
+        description: taskDescription,
+        duration: taskDuration,
+        planId: req.params.plan_id
     });
     
     Plan.findOne({_id: req.params.plan_id}, (err,foundPlan)=>{
@@ -126,19 +126,5 @@ router.route('/:plan_id/tasks').post((req, res) => {
     })
 
 });
-
-// router.route('/:plan_id/tasks').post((req, res) => {
-//     const taskName = req.body.taskName;
-//     const taskDescription = req.body.description;
-//     const taskDuration = req.body.duration;
-//     const newTask = new Task({ taskName, taskDescription, taskDuration });
-//     console.log(newTask);
-//     Plan.find().update(
-//         { "_id": req.params.plan_id },
-//         { "$push": { "tasks": req.body } },
-//     ).then(() => res.json(newTask))
-//         .catch(err => res.status(400).json('Error: ' + err));
-// });
-
 
 module.exports = router;

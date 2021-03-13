@@ -4,10 +4,6 @@ import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
-// import { useHistory } from 'react-router-dom';
-// import { useDispatch } from 'react-redux';
-// import InputContainer from '@material-ui/core/'
-// import { signUp } from '../../../redux/actions/AuthActionCreators'
 
 
 const useStyles = makeStyles((theme) => ({
@@ -31,18 +27,11 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function TeacherInfo() {
-    // const history = useHistory();
-    // const dispatch = useDispatch();
     const classes = useStyles();
 
     const [awards, setAwards] = useState([])
     const [references, setReferences] = useState([])
     const [formData, setFormData] = useState({})
-
-    // useEffect(() => {
-    //     setAwards(user.awards);
-    //     setReferences(user.references);
-    // }, [])
 
     const handleChange = ({ target }) => {
         const { name, value } = target

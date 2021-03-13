@@ -33,8 +33,10 @@ export default function TeacherList() {
   };
 
   const chooseTeacher = (id) => {
-    axios.put(`/users/${id}/students/${userId}`).then((user) => {
+    axios.put(`/users/${id}/students/${userId}`)
+    .then((user) => {
       console.log(user);
+      alert('Succesfully connected to your teacher!')
     });
   };
 

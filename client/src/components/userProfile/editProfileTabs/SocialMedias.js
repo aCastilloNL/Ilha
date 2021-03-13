@@ -3,11 +3,6 @@ import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
-// import { useHistory } from 'react-router-dom';
-// import { useDispatch } from 'react-redux';
-
-// import { signUp } from '../../../redux/actions/AuthActionCreators'
-
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -30,8 +25,6 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function SocialMedias() {
-    // const history = useHistory();
-    // const dispatch = useDispatch();
     const classes = useStyles();
 
     const [linkedIn, setLinkedin] = useState('');
