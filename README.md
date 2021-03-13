@@ -91,7 +91,7 @@ Node.JS required to install all dependencies.
 
 1. Clone the repo
    ```sh
-   git clone https://github.com/aCastilloNL/IlhaDevelopment.git
+   git clone https://github.com/aCastilloNL/Ilha.git
    ```
 2. Install NPM packages
    ```sh
