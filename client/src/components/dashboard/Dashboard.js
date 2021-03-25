@@ -41,7 +41,7 @@ import './Dashboard.css';
 
 const { signOut } = require('../../redux/actions/AuthActionCreators.js');
 
-const drawerWidth = 185;
+const drawerWidth = 195;
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -99,7 +99,7 @@ const useStyles = makeStyles((theme) => ({
   },
   drawerOpen: {
     width: drawerWidth,
-    backgroundColor: 'rgb(255, 255, 255)',
+    backgroundColor: 'rgb(FFF, FFF, FFF)',
     transition: theme.transitions.create('width', {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.enteringScreen,

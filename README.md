@@ -8,9 +8,9 @@
 <br>
 
 <p align="center">
-  <a href="https://loving-keller-6b53a6.netlify.app/">
-    <img src="https://ilha.io/static/media/logo_Black_T.41a76d9d.svg" alt="Logo" width="250" height="200">
-  </a>
+  <a href="https://loving-keller-6b53a6.netlify.app/"> 
+    <img src='./ilhaLogo.png' alt="Logo" >
+  </a> 
 
   <br>
 

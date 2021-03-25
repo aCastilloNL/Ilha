@@ -20,7 +20,6 @@ function App() {
       <Switch>
         <Route path="/" exact component={Signin} />
         <Route path="/signup" component={Signup} />
-        {/* <Route path="/Dashboard" component={Dashboard} /> */}
 
         <Route path="/Video" component={Video} />
         <Route path="/myProfile" component={UserProfile} />
