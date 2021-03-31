@@ -8,7 +8,6 @@ import makeStore from './redux/store';
 
 const store = makeStore();
 
-
 ReactDOM.render(
 
   <React.StrictMode>
