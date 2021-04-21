@@ -53,6 +53,7 @@
 
 <p align="center">
   This product is the outcome of two months collaboration between five dedicated Web Development students utilizing all they have learned throughout a 5-month course intensive at the Wild Code School. Ilha.io, the client, is an established music-learning platform created exclusively for musicians by musicians. The client has requested a number of features to be implemented into the current version of the Live website.
+</p>
 
 Implementations:
 - Registration Form to create an account.
@@ -62,6 +63,7 @@ Implementations:
 - Live Video Streaming Environment/classrom for teachers-student interaction.
 - Recorded & Downloading Videos of a live streamed study session.
 
+<p align="center">
 Our team decided to re-create the majority of the official website in order to incorporate all additional features without affecting the premier product in conjunction with gaining insight into the full function of it’s technicality. As a result, specific frameworks were substituted by others, such as employing Redux in lieu of Context. 
 </p>
 
